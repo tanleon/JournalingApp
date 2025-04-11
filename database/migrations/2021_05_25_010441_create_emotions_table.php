@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBackgroundsTable extends Migration
+class CreateEmotionsTable extends Migration
 {
      /**
       * Run the migrations.
@@ -13,9 +13,9 @@ class CreateBackgroundsTable extends Migration
       */
      public function up()
      {
-          Schema::create('backgrounds', function (Blueprint $table) {
+          Schema::create('emotions', function (Blueprint $table) {
                $table->id();
-               $table->string("color", 7);
+               $table->string("name"); // Name of the emotion
                $table->timestamps();
           });
      }
@@ -27,6 +27,6 @@ class CreateBackgroundsTable extends Migration
       */
      public function down()
      {
-          Schema::dropIfExists('backgrounds');
+          Schema::dropIfExists('emotions');
      }
 }

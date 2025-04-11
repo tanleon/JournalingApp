@@ -18,8 +18,8 @@ class Label extends Model
      }
 
      // Many to many relationship
-     public function notes()
+     public function entries()
      {
-          return $this->belongsToMany(Note::class);
+          return $this->belongsToMany(Entry::class, 'entry_label', 'label_id', 'entry_id'); 
      }
 }

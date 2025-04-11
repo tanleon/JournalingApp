@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotesTable extends Migration
+class CreateEntriesTable extends Migration
 {
      /**
       * Run the migrations.
@@ -13,19 +13,17 @@ class CreateNotesTable extends Migration
       */
      public function up()
      {
-          Schema::create('notes', function (Blueprint $table) {
+          Schema::create('entries', function (Blueprint $table) {
                $table->id();
                $table->string("title");
-               $table->string('slug');
-               $table->text("body");
-               $table->string('abstract');
-               $table->boolean("delete")->default("0");
-               $table->unsignedBigInteger("background_id")->nullable();
+               $table->text("body"); // Ensure this is not nullable
+               $table->boolean("delete")->default(false);
+               $table->unsignedBigInteger("emotion_id")->nullable();
                $table->unsignedBigInteger("user_id");
 
-               $table->foreign("background_id")
+               $table->foreign("emotion_id")
                     ->references("id")
-                    ->on("backgrounds")
+                    ->on("emotions")
                     ->onUpdate("cascade")
                     ->onDelete("set null");
 
@@ -46,6 +44,6 @@ class CreateNotesTable extends Migration
       */
      public function down()
      {
-          Schema::dropIfExists('notes');
+          Schema::dropIfExists('entries');
      }
 }

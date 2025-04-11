@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLabelNoteTable extends Migration
+class CreateLabelEntryTable extends Migration
 {
      /**
       * Run the migrations.
@@ -13,13 +13,13 @@ class CreateLabelNoteTable extends Migration
       */
      public function up()
      {
-          Schema::create('label_note', function (Blueprint $table) {
+          Schema::create('label_entry', function (Blueprint $table) {
                $table->id();
 
-               $table->unsignedBigInteger("note_id");
+               $table->unsignedBigInteger("entry_id");
                $table->unsignedBigInteger("label_id");
 
-               $table->foreign("note_id")->references("id")->on("notes")->onDelete("cascade")->onUpdate("cascade");
+               $table->foreign("entry_id")->references("id")->on("entries")->onDelete("cascade")->onUpdate("cascade");
                $table->foreign("label_id")->references("id")->on("labels")->onDelete("cascade")->onUpdate("cascade");
 
                $table->timestamps();
@@ -33,6 +33,6 @@ class CreateLabelNoteTable extends Migration
       */
      public function down()
      {
-          Schema::dropIfExists('label_note');
+          Schema::dropIfExists('label_entry');
      }
 }

@@ -6,7 +6,7 @@
 
      <div class="card-form-container">
           <div class="form">
-               <h1>Note App </h1>
+               <h1>Journaling App</h1>
                <h2>Sign In:</h2>
                
                <form action="{{route("login.index") }}" method="POST">
@@ -42,7 +42,7 @@
 @endsection
 
 @section('scripts')
-     @include('notes.components.alerts-js')
+     @include('entries.components.alerts-js')
      <script>
           document.getElementById("show-password").addEventListener("change", e => {
                let $inputPassword = document.querySelector("#password");

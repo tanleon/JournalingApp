@@ -16,8 +16,8 @@ class Role extends Model
      ];
 
      // One to many relationship
-     public function noteUsers()
+     public function entryUsers()
      {
-          return $this->hasMany(NoteUser::class);
+          return $this->hasMany(EntryUser::class); // Updated from NoteUser to EntryUser
      }
 }

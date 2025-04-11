@@ -1,0 +1,87 @@
+.card-container {
+     cursor: pointer;
+
+     .card {
+          border-radius: 8px;
+          position: relative;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+          &:hover {
+               transform: translateY(-15px);
+               box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+          }
+     }
+
+     .card-header {
+          margin-bottom: 10px;
+
+          .created-at {
+               font-size: 1.4rem;
+               font-weight: bold;
+               color: #000;
+               background-color: #fff;
+               padding: 2px 4px;
+               border: 1px solid #000;
+               border-radius: 4px;
+          }
+     }
+
+     .content {
+          font-size: 1.2rem;
+          color: #555;
+          line-height: 1.5;
+     }
+
+     .tags-container {
+          margin-top: 10px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 5px;
+
+          .label {
+               font-size: 1rem;
+               color: #fff;
+               background-color: #007bff;
+               padding: 4px 8px;
+               border-radius: 4px;
+          }
+     }
+
+     .emotion-container {
+          margin-top: 15px;
+          text-align: center;
+
+          .emotion-name {
+               font-size: 1.2rem;
+               font-weight: bold;
+               color: #444;
+          }
+     }
+
+     .dropdown {
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          transform: translateY(-50%);
+          background: #fff;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          display: none;
+          padding: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          width: 200px;
+
+          .menu-item {
+               display: block;
+               width: 100%;
+               text-align: left;
+               padding: 5px 10px;
+               background: none;
+               border: none;
+               font-size: 1rem;
+               color: #333;
+               cursor: pointer;
+          }
+     }
+}

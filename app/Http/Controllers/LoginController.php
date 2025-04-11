@@ -24,7 +24,7 @@ class LoginController extends Controller
 
           if (Auth::attempt($credentials)) {
                $request->session()->regenerate();
-               return redirect()->route('notes.index');
+               return redirect()->route('entries.index'); 
           }
 
           return back()->withErrors([

@@ -22,9 +22,15 @@ class LabelFactory extends Factory
       */
      public function definition()
      {
+          // Generate a random label name
+          $topics = ['Work', 'Personal', 'Health', 'Travel', 'Ideas', 'Gratitude', 'Goals', 'Dreams', 'Reflection', 'Family'];
+
+          // Use Faker to generate random words if the predefined list is exhausted
+          $randomTopic = $this->faker->unique()->word();
+
           return [
-               'name' => $this->faker->word(20),
-               'user_id' => User::all()->random()->id
+               'name' => $this->faker->randomElement(array_merge($topics, [$randomTopic])),
+               'user_id' => User::inRandomOrder()->first()->id,
           ];
      }
 }

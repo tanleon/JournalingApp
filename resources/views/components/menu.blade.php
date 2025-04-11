@@ -7,17 +7,17 @@
 
           <ul class="options">
                <div class="general">
-                    {{-- Notes --}}
-                    <li class="@if( request()->routeIs("notes.index") ) active @endif">
-                         <a href="{{ route('notes.index') }}">
+                    {{-- Entries --}}
+                    <li class="@if( request()->routeIs("entries.index") ) active @endif">
+                         <a href="{{ route('entries.index') }}">
                               <span class="material-icons-outlined icons">lightbulb</span>
-                              Notes
+                              Entries
                          </a>
                     </li>
 
                     {{-- Trash --}}
-                    <li class="@if( request()->routeIs("notes.trash") ) active @endif">
-                         <a href="{{ route('notes.trash') }}">
+                    <li class="@if( request()->routeIs("entries.trash") ) active @endif">
+                         <a href="{{ route('entries.trash') }}">
                               <span class="material-icons-outlined icons">delete</span>
                               Trash
                          </a>
@@ -28,7 +28,7 @@
                     <h3 class="title">Labels</h3>
                     
                     @foreach ($user->labels as $label)
-                        <li @if( request()->routeIs("labels.show") && $currentLabel == $label) class="active" @endif>
+                        <li @if( request()->routeIs("labels.show") && isset($currentLabel) && $currentLabel == $label) class="active" @endif>
                               <a href="{{ route("labels.show", $label) }}">
                                    <span class="material-icons-outlined icons">label</span>
                                    {{ $label->name }}
@@ -37,13 +37,13 @@
                     @endforeach
 
                     <li class="edit_label-bttn" id="edit_label-bttn">
-                         <button >
+                         <button>
                               <span class="material-icons-outlined icons">edit</span>
                               Edit labels
                          </button>
                     </li>
 
-                    <li class="edit_label-bttn" id="edit_label-bttn">
+                    <li class="edit_label-bttn" id="create_label-bttn">
                          <button>
                               <span class="material-icons-outlined icons">add</span>
                               Create new label

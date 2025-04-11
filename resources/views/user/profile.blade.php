@@ -1,12 +1,12 @@
 @extends('layouts.template')
 
-@section('title', 'Profile - Note App')
+@section('title', 'Profile - Entry App')
 
 @section('header')
-     <header class="header-note">
-          <div class="container"">
-               <a href="{{route("notes.index")}}" class="material-icons-outlined icons">&#xe5c4;</a>
-          <h2 class="profile-title">Settings:</h2>
+     <header class="header-entry">
+          <div class="container">
+               <a href="{{route("entries.index")}}" class="material-icons-outlined icons">&#xe5c4;</a>
+               <h2 class="profile-title">Settings:</h2>
           </div>
      </header>
 @endsection
@@ -17,7 +17,7 @@
           <div class="input-container-image">
                <label class="profile-image" for="file">
                     <figure>
-                         <img src=" @if($user->image) {{$user->image->path}} @else {{asset("/img/image-defaut.png")}} @endif" alt="Undisplayable image" id="picture">
+                         <img src="{{ $user->image ? asset($user->image->path) : asset('/img/image-defaut.png') }}" alt="Profile Image" id="picture">
                     </figure>
                     <span class="material-icons-outlined icons edit">&#xe3c9;</span>
                </label>
@@ -49,22 +49,28 @@
           </div>
 
           <div class="input-container">
+               <label for="new-password-confirmation">[Optional] Confirm New Password:</label>
+               <span class="material-icons icon">&#xe897;</span>
+               <input type="password" name="new-password_confirmation" id="new-password-confirmation" value="">
+          </div>
+
+          <div class="input-container">
                <input type="submit" value="Save">
           </div>
      </form>
 @endsection
 
 @section('scripts')
-     @include('notes.components.alerts-js')
+     @include('entries.components.alerts-js') <!-- Updated from notes to entries -->
      
-     {{-- Previsualization Image  --}}
+     {{-- Previsualization Image --}}
      <script>
-          document.getElementById("file").addEventListener('change', e=> {
+          document.getElementById("file").addEventListener('change', e => {
                let file = e.target.files[0];
-               let reader= new FileReader();
+               let reader = new FileReader();
 
                reader.onload = e => document.getElementById("picture").setAttribute('src', e.target.result);
                reader.readAsDataURL(file);
-          })
+          });
      </script>
 @endsection

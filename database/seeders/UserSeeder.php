@@ -15,19 +15,24 @@ class UserSeeder extends Seeder
       */
      public function run()
      {
-          User::create([
-               'name' => 'Test User',
-               'email' => 'example@gmail.com',
-               'password' => bcrypt('password')
-          ]);
+          // Create a test user
+          if (!User::where('email', 'example@gmail.com')->exists()) {
+               $testUser = User::create([
+                    'name' => 'Test User',
+                    'email' => 'example@gmail.com',
+                    'password' => bcrypt('password'),
+               ]);
 
-          User::factory(5)->create();
+               Image::factory()->create([
+                    'user_id' => $testUser->id,
+               ]);
+          }
 
-          $users = User::all();
-
-          foreach ($users as $user)
-               Image::factory(1)->create([
+          // Create additional users with profile images
+          User::factory(5)->create()->each(function ($user) {
+               Image::factory()->create([
                     'user_id' => $user->id,
                ]);
+          });
      }
 }

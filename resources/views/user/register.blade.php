@@ -1,12 +1,12 @@
 @extends('layouts.template')
 
-@section('title', 'Create your Account - Note App')
+@section('title', 'Create your Account - Entry App')
 
 @section('content')
 
      <div class="card-form-container">
           <div class="form">
-               <h1>Note App </h1>
+               <h1>Entry App</h1>
                <h2>Create your account:</h2>
                
                <form action="{{ route('login.register') }}" method="POST">
@@ -59,17 +59,17 @@
 @endsection
 
 @section('scripts')
-     @include('notes.components.alerts-js')
+     @include('entries.components.alerts-js') <!-- Updated from notes to entries -->
      <script>
-          document.addEventListener("change", e=> {
-               if(e.target.matches(".show-password *")) {
+          document.addEventListener("change", e => {
+               if (e.target.matches(".show-password *")) {
                     let $input = e.target.closest(".input-container").querySelector("input");
 
-                    if($input.type == "password")
+                    if ($input.type == "password")
                          $input.type = "text";
                     else
                          $input.type = "password";
                }
-          })
+          });
      </script>
 @endsection

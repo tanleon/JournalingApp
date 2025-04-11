@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class NoteUser extends Pivot
+class EntryUser extends Pivot
 {
      // One to many relationship (inverse)
      public function role()

@@ -1,6 +1,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
      @if ($errors->any())
+          console.log(@json($errors->all())); // Debugging: Log errors to the console
           Swal.fire({
                icon: 'error',
                title: 'Oops... Error',
@@ -19,7 +20,7 @@
      @endif
 
      @if(session('info'))
-               Swal.fire({
+          Swal.fire({
                icon: 'success',
                title: '{!! session('info') !!}',
           })

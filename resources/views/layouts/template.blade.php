@@ -14,12 +14,12 @@
 </head>
 
 <body 
-     @if(request()->routeIs("notes.show")) 
-          style="background: {{$note->background->color}};"
+     @if(request()->routeIs("entries.show")) 
+          style="background: {{$entry->emotion->color}};"
      @endif
 >
 
-     @yield('header' )
+     @yield('header')
 
      <div class="container">
           @yield('content')

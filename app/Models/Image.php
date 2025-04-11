@@ -15,9 +15,9 @@ class Image extends Model
           'updated_at'
      ];
 
-     // Polymorphic one  to many relationship (inverse)
-     public function user()
+     // Polymorphic one-to-many relationship (inverse)
+     public function imageable()
      {
-          return $this->belongsTo(User::class);
+          return $this->morphTo(); // Updated to use polymorphic relationship
      }
 }

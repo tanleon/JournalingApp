@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Note extends Model
+class Entry extends Model
 {
      use HasFactory;
 
@@ -16,9 +16,9 @@ class Note extends Model
      ];
 
      // One to many relationship (inverse)
-     public function background()
+     public function emotion()
      {
-          return $this->belongsTo(Background::class);
+          return $this->belongsTo(Emotion::class);
      }
 
      // Many to many relationship
@@ -29,10 +29,10 @@ class Note extends Model
 
      public function labels()
      {
-          return $this->belongsToMany(Label::class);
+          return $this->belongsToMany(Label::class, 'entry_label', 'entry_id', 'label_id');
      }
 
-     // Polymorphic one  to many relationship
+     // Polymorphic one to many relationship
      public function images()
      {
           return $this->morphMany(Image::class, 'imageable');

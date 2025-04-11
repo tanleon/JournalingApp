@@ -37,7 +37,7 @@ if(editorContainer.classList.contains('readonly'))
                }
           },
           theme: 'snow',
-          placeholder: 'Write Note',
+          placeholder: 'Write',
           readOnly: true,
 
      });
@@ -61,7 +61,7 @@ else
                }
           },
           theme: 'snow',
-          placeholder: 'Write Note',
+          placeholder: 'Write',
      });
 }
 

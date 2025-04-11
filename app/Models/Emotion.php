@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Background extends Model
+class Emotion extends Model
 {
      use HasFactory;
 
-     protected $fillable = ['color'];
+     protected $fillable = ['name'];
 
      // One to many relationship
-     public function notes()
+     public function entries()
      {
-          return $this->hasMany(Note::class);
+          return $this->hasMany(Entry::class);
      }
 }

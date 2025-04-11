@@ -47,10 +47,10 @@ class User extends Authenticatable
           return $this->hasMany(Label::class);
      }
 
-     // Many to many relationship
-     public function notes()
+     // One to many relationship for entries
+     public function entries()
      {
-          return $this->hasMany(Note::class);
+          return $this->hasMany(Entry::class);
      }
 
      // Polymorphic one to one relationship

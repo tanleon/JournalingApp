@@ -1,59 +1,114 @@
-<div class="card-container grid-item">
-     <div class="card"style="background-color: {{$note->background->color}};">
+@php
+     // Define emotion-to-color mapping
+     $emotionColors = [
+          'Neutral' => '#d3d3d3',
+          'Joy' => '#ffeb3b',
+          'Gratitude' => '#ff9800',
+          'Love' => '#e91e63',
+          'Excitement' => '#ff5722',
+          'Hope' => '#4caf50',
+          'Pride' => '#9c27b0',
+          'Contentment' => '#8bc34a',
+          'Amusement' => '#ffc107',
+          'Inspiration' => '#03a9f4',
+          'Relief' => '#00bcd4',
+          'Sadness' => '#2196f3',
+          'Anger' => '#f44336',
+          'Fear' => '#673ab7',
+          'Disgust' => '#795548',
+          'Guilt' => '#607d8b',
+          'Shame' => '#9e9e9e',
+          'Frustration' => '#ff7043',
+          'Loneliness' => '#3f51b5',
+          'Anxiety' => '#009688',
+          'Regret' => '#ff5252',
+          'Surprise' => '#ffcc80',
+          'Nostalgia' => '#ffab91',
+          'Curiosity' => '#ffb74d',
+          'Confusion' => '#cddc39',
+     ];
 
-          {{-- Card title & body --}}
-          <a href="@isset($trash) {{route('notes.read_only', $note)}} @else {{route('notes.show', $note)}} @endisset" class="main-content">
-               <h3>{{$note->title}}</h3>
-               <div class="content">
-                    {!!$note->abstract!!}
-               </div>
-          </a>
+     // Get the color for the current emotion or fallback to white
+     $cardColor = $emotionColors[$entry->emotion->name] ?? '#ffffff';
+@endphp
+
+<div class="card-container grid-item" 
+     @isset($trash) onclick="toggleDropdown(this);" @else onclick="window.location='{{ route('entries.show', $entry) }}';" @endisset 
+     style="cursor: pointer;">
+     <div class="card hover-effect" style="background-color: {{ $cardColor }}; border-radius: 8px; position: relative;">
+
+          {{-- Card created_at --}}
+          <div class="card-header" style="margin-bottom: 10px;">
+               <span class="created-at" style="
+                         font-size: 1.4rem; 
+                         font-weight: bold; 
+                         color: #000000; 
+                         background-color: #ffffff; 
+                         padding: 2px 4px; 
+                         border: 1px solid #000000; 
+                         border-radius: 4px;
+               ">
+                    {{ $entry->created_at->format('Y-m-d H:i:s') }}
+               </span>
+          </div>
+
+          {{-- Card title & body preview --}}
+          <h3 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 8px; color: #333;">{{$entry->title}}</h3>
+          <div class="content" style="font-size: 1.2rem; color: #555; line-height: 1.5;">
+               {{ Str::limit(strip_tags($entry->body), 100, '...') }}
+          </div>
 
           {{-- Card tags --}}
-          <div class="tags-container">
-               @foreach ($note->labels as $label)
-                   <a href="{{ route("labels.show", $label) }}" class="label">{{ $label->name }}</a>
+          <div class="tags-container" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
+               @foreach ($entry->labels as $label)
+                    <span class="label" style="font-size: 1rem; color: #fff; background-color: #007bff; padding: 4px 8px; border-radius: 4px;">
+                         {{ $label->name }}
+                    </span>
                @endforeach
           </div>
 
-          {{-- Card footer icons --}}
-          <div class="icons">
-               <a href="{{route('notes.show', $note)}}">
-                    <span class="material-icons-outlined">&#xf1df;</span>
-               </a>
-               <div class="options">
-                    <button class="material-icons-outlined dropdown-menu-bttn">&#xe5d4;</button>
+          {{-- Emotion at the middle bottom --}}
+          <div class="emotion-container" style="margin-top: 15px; text-align: center;">
+               <span class="emotion-name" style="font-size: 1.2rem; font-weight: bold; color: #444;">{{ $entry->emotion->name }}</span>
+          </div>
+
+          {{-- Options Dropdown --}}
+          @isset($trash)
+               <div class="dropdown" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #fff; border: 1px solid #ccc; border-radius: 4px; display: none; padding: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 200px;">
+                    {{-- Delete button --}}
+                    <form action="{{ route('entries.destroy', $entry) }}" method="post" style="margin-bottom: 10px;">
+                         @csrf
+                         @method("delete")
+                         <button type="submit" class="menu-item" style="display: block; width: 100%; text-align: left; padding: 5px 10px; background: none; border: none; font-size: 1rem; color: #333; cursor: pointer;">Delete Entry</button>
+                    </form>
+
+                    {{-- Restore button --}}
+                    <form action="{{ route('entries.restore', $entry) }}" method="post" style="margin-bottom: 10px;">
+                         @csrf
+                         @method('put')
+                         <button type="submit" class="menu-item" style="display: block; width: 100%; text-align: left; padding: 5px 10px; background: none; border: none; font-size: 1rem; color: #333; cursor: pointer;">Restore Entry</button>
+                    </form>
                </div>
-          </div>
+          @else
+               <div class="options" style="position: absolute; top: 10px; right: 10px;" onclick="event.stopPropagation(); toggleDropdown(this);">
+                    <button class="material-icons-outlined dropdown-menu-bttn" style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #666;">&#xe5d4;</button>
+                    <div class="dropdown" style="position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 4px; display: none; padding: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 200px;">
+                         {{-- Delete button --}}
+                         <form action="{{ route('entries.sendTrash', $entry) }}" method="post" style="margin-bottom: 10px;">
+                              @csrf
+                              @method("delete")
+                              <button type="submit" class="menu-item" style="display: block; width: 100%; text-align: left; padding: 5px 10px; background: none; border: none; font-size: 1rem; color: #333; cursor: pointer;">Delete Entry</button>
+                         </form>
+                         <a href="{{ route('entries.make_copy', $entry) }}" class="menu-item" style="display: block; width: 100%; text-align: left; padding: 5px 10px; font-size: 1rem; text-decoration: none;">Make a copy</a>
+                    </div>
+               </div>
+          @endisset
      </div>
-
-     @isset($trash)
-          <div class="dropdown">
-               {{-- Delete button --}}
-               <form action="{{ route('notes.destroy', $note) }}" method="post">
-                    @csrf
-                    @method("delete")
-                    <button type="submit" class="menu-item">Delete Note</button>
-               </form>
-
-               {{-- Restore button --}}
-               <form action="{{ route('notes.restore', $note) }}" method="post">
-                    @csrf
-                    @method('put')
-                    <button type="submit" class="menu-item">Restore Note</button>
-               </form>
-          </div>
-     @else
-          <div class="dropdown">
-               {{-- Delete button --}}
-               <form action="{{ route('notes.sendTrash', $note) }}" method="post">
-                    @csrf
-                    @method("delete")
-                    <button type="submit" class="menu-item">Delete Note</button>
-               </form>
-
-               <a href="{{ route('notes.show_labels', $note) }}" class="menu-item">Add label</a>
-               <a href="{{ route('notes.make_copy', $note) }}" class="menu-item">Make a copy</a>
-          </div>
-     @endisset
 </div>
+
+<script>
+     function toggleDropdown(element) {
+          const dropdown = element.querySelector('.dropdown');
+          dropdown.style.display = dropdown.style.display === 'none' || dropdown.style.display === '' ? 'block' : 'none';
+     }
+</script>

@@ -18,39 +18,39 @@ class UserController extends Controller
           return view('user.profile', compact('user'));
      }
 
-     public function update(UpdateUserRequest $request)
+     public function update(Request $request)
      {
           $user = Auth::user();
 
-          if ($request['new-password'] != null) {
-               if (Hash::check($request['current-password'], $user->password)) {
-                    $user->update([
-                         "password" => Hash::make($request['new-password'])
-                    ]);
-               } else {
-                    return redirect()->route('user.profile')->withErrors("Current password is incorrect");
-               }
-          }
-
-          if ($request->file('image_profile')) {
-               $url = Storage::disk('s3')->put('avatars', $request->file('image_profile'));
-
-               if ($user->image) {
-                    Storage::disk('s3')->delete(Str::remove('https://note-app-images.s3.amazonaws.com/', $user->image->path));
-                    $user->image->delete();
-               }
-
-               Image::create([
-                    'path' => 'https://note-app-images.s3.amazonaws.com/' . $url,
-                    'user_id' => $user->id
-               ]);
-          }
-
-          $user->update([
-               "name" => $request->name,
-               "email" => $request->email,
+          $request->validate([
+               'name' => 'required|string|max:255',
+               'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+               'image_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+               'current-password' => 'nullable|string',
+               'new-password' => 'nullable|string|min:8|confirmed', // Ensure confirmation is validated
           ]);
 
-          return redirect()->route('user.profile')->with('info', 'User profile updated successfully');
+          // Update user details
+          $user->name = $request->name;
+          $user->email = $request->email;
+
+          // Handle profile image upload
+          if ($request->hasFile('image_profile')) {
+               $imagePath = $request->file('image_profile')->store('profile_images', 'public');
+               $user->image()->updateOrCreate([], ['path' => '/storage/' . $imagePath]);
+          }
+
+          // Handle password update
+          if ($request->filled('current-password') && $request->filled('new-password')) {
+               if (Hash::check($request->input('current-password'), $user->password)) {
+                    $user->password = Hash::make($request->input('new-password'));
+               } else {
+                    return redirect()->back()->withErrors(['current-password' => 'Current password is incorrect.']);
+               }
+          }
+
+          $user->save();
+
+          return redirect()->route('user.profile')->with('success', 'Profile updated successfully.');
      }
 }

@@ -2,9 +2,8 @@
      const editLabelBttn = document.getElementById("edit_label-bttn");
      const menu = document.getElementById("menu");
 
-     document.addEventListener("click", e=> {
-
-          if(e.target == editLabelBttn || e.target.matches(".edit_label-bttn *")){
+     document.addEventListener("click", e => {
+          if (e.target == editLabelBttn || e.target.matches(".edit_label-bttn *")) {
                menu.classList.remove("active");
 
                Swal.fire({
@@ -20,9 +19,9 @@
 
                               @foreach ($user->labels as $label)
                                    <div class="input-container alert-label-container"> 
-                                        <input type="text" name="id-labels[]" value="{{ $label->id }}" style="display:none;">{{-- id's labels order --}}
-                                        <input type="checkbox" id="del-{{ $label->id }}" name="delete-labels[]" value="{{ $label->id }}" style="display:none;" class="delete-checkbox">  {{-- labels deleted id's --}}
-                                        <input type="text" name="labels[]" id="label-{{ $label->id }}" value="{{ $label->name }}">
+                                        <input type="hidden" name="id-labels[]" value="{{ $label->id }}"> {{-- Label IDs --}}
+                                        <input type="checkbox" id="del-{{ $label->id }}" name="delete-labels[]" value="{{ $label->id }}" class="delete-checkbox" style="display:none;"> {{-- Labels to delete --}}
+                                        <input type="text" name="labels[]" id="label-{{ $label->id }}" value="{{ $label->name }}" class="label-input">
 
                                         <label class="icons">
                                              <span class="material-icons-outlined label-icon">&#xe892;</span>
@@ -33,7 +32,7 @@
                               @endforeach
 
                               <div>
-                                   <input type="submit" value="Save">
+                                   <input type="submit" value="Save" class="save-button">
                               </div>
                          </form>
                     `,
@@ -42,7 +41,14 @@
                     customClass: {
                          title: 'alert-title'
                     },
-               })
+               });
+
+               // Ensure the form is submitted correctly
+               const alertLabelForm = document.getElementById("alert-label-form");
+               alertLabelForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    this.submit();
+               });
           }
-     })
+     });
 </script>
