@@ -20,6 +20,7 @@
 
                     <div class="input-container">
                          <label for="password">Password:</label>
+                         
                          <span class="material-icons icon">&#xe897;</span>
                          <input type="password" name="password" id="password" value="">
 
