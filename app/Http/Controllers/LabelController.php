@@ -8,6 +8,7 @@ use App\Models\Label;
 use App\Models\Entry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class LabelController extends Controller
 {
@@ -45,6 +46,10 @@ class LabelController extends Controller
 
      public function update(Request $request)
      {
+if (!Gate::allows('isAdmin') && !Gate::allows('isAuthor')) {
+               abort(403, 'Unauthorized action.');
+          }
+
           $user = Auth::user();
 
           // Validate the request
@@ -85,6 +90,10 @@ class LabelController extends Controller
 
      public function store(Request $request)
      {
+if (!Gate::allows('isAuthor')) {
+               abort(403, 'Unauthorized action.');
+          }
+
           $request->validate([
                'name' => 'required|string|max:255|unique:labels,name'
           ]);

@@ -30,6 +30,5 @@
      @endisset
 
      @yield('scripts')
-</body>
 
 </html>

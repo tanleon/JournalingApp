@@ -4,6 +4,26 @@
 
 @section('styles')
      <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+     <style>
+          .entry-container {
+               background-color: #f9f9f9;
+               padding: 20px;
+               border-radius: 8px;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+
+          .title-input, .datetime-input, .emotion-dropdown, .label-input {
+               background-color: #fff;
+               color: #000;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+
+          .editor-container {
+               background-color: #fff;
+               color: #000;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+     </style>
 @endsection
 
 @section('content')
@@ -78,64 +98,62 @@
 @section('scripts')
      <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
      <script>
-          document.addEventListener('DOMContentLoaded', function () {
-               const quill = new Quill('#editor', {
-                    theme: 'snow'
-               });
+          const quill = new Quill('#editor', {
+               theme: 'snow'
+          });
 
-               const form = document.getElementById('entry-form');
-               const bodyInput = document.getElementById('entry-body');
+          const form = document.getElementById('entry-form');
+          const bodyInput = document.getElementById('entry-body');
 
-               form.addEventListener('submit', function () {
-                    bodyInput.value = quill.root.innerHTML;
-               });
+          form.addEventListener('submit', function () {
+               bodyInput.value = quill.root.innerHTML;
+          });
 
-               // Set datetime-local field to current time in user's timezone
-               const datetimeInput = document.getElementById('entry-datetime');
-               const now = new Date();
-               const offset = now.getTimezoneOffset() * 60000; // Offset in milliseconds
-               const localISOTime = new Date(now - offset).toISOString().slice(0, 16);
-               datetimeInput.value = localISOTime;
+          // Set datetime-local field to current time in user's timezone
+          const datetimeInput = document.getElementById('entry-datetime');
+          const now = new Date();
+          const offset = now.getTimezoneOffset() * 60000; // Offset in milliseconds
+          const localISOTime = new Date(now - offset).toISOString().slice(0, 16);
+          datetimeInput.value = localISOTime;
 
-               // Add new label functionality
-               const addLabelBtn = document.getElementById('add-label-btn');
-               const newLabelInput = document.getElementById('new-label-input');
-               const currentLabels = document.getElementById('current-labels');
+          // Add new label functionality
+          const addLabelBtn = document.getElementById('add-label-btn');
+          const newLabelInput = document.getElementById('new-label-input');
+          const currentLabels = document.getElementById('current-labels');
 
-               addLabelBtn.addEventListener('click', function () {
-                    const labelName = newLabelInput.value.trim();
-                    if (labelName) {
-                         fetch('{{ route('labels.store') }}', {
-                              method: 'POST',
-                              headers: {
-                                   'Content-Type': 'application/json',
-                                   'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                              },
-                              body: JSON.stringify({ name: labelName })
-                         })
-                         .then(response => response.json())
-                         .then(data => {
-                              if (data.success) {
-                                   const newLabel = document.createElement('div');
-                                   newLabel.classList.add('label-item');
-                                   newLabel.innerHTML = `
-                                        <input type="checkbox" id="label-${data.label.id}" name="labels[]" value="${data.label.id}">
-                                        <label for="label-${data.label.id}">${data.label.name}</label>
-                                   `;
-                                   currentLabels.appendChild(newLabel);
-                                   newLabelInput.value = '';
-                              } else {
-                                   alert('Failed to add label.');
-                              }
-                         })
-                         .catch(error => {
-                              console.error('Error:', error);
-                              alert('An error occurred while adding the label.');
-                         });
-                    } else {
-                         alert('Please enter a label name.');
-                    }
-               });
+          addLabelBtn.addEventListener('click', function () {
+               const labelName = newLabelInput.value.trim();
+               if (labelName) {
+                    fetch('{{ route('labels.store') }}', {
+                         method: 'POST',
+                         headers: {
+                              'Content-Type': 'application/json',
+                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                         },
+                         body: JSON.stringify({ name: labelName })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                         if (data.success) {
+                              const newLabel = document.createElement('div');
+                              newLabel.classList.add('label-item');
+                              newLabel.innerHTML = `
+                                   <input type="checkbox" id="label-${data.label.id}" name="labels[]" value="${data.label.id}">
+                                   <label for="label-${data.label.id}">${data.label.name}</label>
+                              `;
+                              currentLabels.appendChild(newLabel);
+                              newLabelInput.value = '';
+                         } else {
+                              alert('Failed to add label.');
+                         }
+                    })
+                    .catch(error => {
+                         console.error('Error:', error);
+                         alert('An error occurred while adding the label.');
+                    });
+               } else {
+                    alert('Please enter a label name.');
+               }
           });
      </script>
      @include('entries.components.alerts-js')

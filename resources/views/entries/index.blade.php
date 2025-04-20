@@ -6,6 +6,17 @@
 
      @include('components/header', [$user, $entries])
 
+     <!-- Check if $lastVisitedEntry is defined before using it -->
+     @if (isset($lastVisitedEntry) && $lastVisitedEntry)
+          <div class="alert alert-info">
+               <p>Last visited entry: <strong>{{ $lastVisitedEntry->title }}</strong></p>
+               <a href="{{ route('entries.show', $lastVisitedEntry->id) }}" class="btn btn-primary">
+                    Go to Last Visited Entry</a>
+          </div>
+     @else
+          <p>No last visited entry found.</p><br>
+     @endif
+
      @isset($search)
           @if($entries->count() > 0)
                <h2 class="title-result">Results for: "{{ $search }}"</h2>

@@ -10,17 +10,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Log; 
+
+
 
 class EntryController extends Controller
 {
      // Display entries
      public function index()
      {
+          $this->authorize('viewAny', Entry::class); // Maps to EntryPolicy::viewAny
+
           $user = Auth::user();
           $entries = $user->entries()->where("delete", 0)->orderByDesc('updated_at')->get();
           $useMenu = true;
-          return view('entries.index', compact('user', 'entries', 'useMenu'));
+
+          // Ensure $lastVisitedEntry is defined and passed to the view
+          $lastVisitedEntryId = session('last_visited_entry');
+          $lastVisitedEntry = $lastVisitedEntryId ? Entry::find($lastVisitedEntryId) : null;
+
+          // Check if the current route is for labels
+          if (request()->routeIs('labels.show')) {
+               return view('entries.index', compact('user', 'entries', 'useMenu'));
+          }
+
+          // Pass $lastVisitedEntry for other views
+          return view('entries.index', compact('user', 'entries', 'useMenu', 'lastVisitedEntry'));
      }
 
      // Create entry view
@@ -37,6 +52,9 @@ class EntryController extends Controller
      // Store a new entry
      public function store(Request $request) 
      {
+// Use the 'create' policy method for model-specific access control
+          $this->authorize('create', Entry::class);
+
           $request->validate([
                'title' => 'required|string|max:255',
                'body' => 'required|string',
@@ -58,7 +76,12 @@ class EntryController extends Controller
      // Show an entry
      public function show(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          // Use the 'view' policy method to check if the user can view the entry
+          $this->authorize('view', $entry);
+
+          // Store the last visited entry ID in the session
+          session(['last_visited_entry' => $entry->id]);
+
           $user = Auth::user();
           $emotions = Emotion::all();
           $edit = true;
@@ -69,14 +92,17 @@ class EntryController extends Controller
      // Show entry with labels edit alert
      public function showLabelsEdit(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          // Use the 'view' policy method to check if the user can view the entry
+          $this->authorize('view', $entry);
+
           return redirect()->route('entries.show', $entry)->with('labels_active_event', true);
      }
 
      // Make a copy of an entry
      public function makeCopy(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          // Use the 'createCopy' policy method to check if the user can create a copy of the entry
+          $this->authorize('createCopy', $entry);
 
           $clone = $entry->replicate();
           $clone->push();
@@ -89,7 +115,8 @@ class EntryController extends Controller
      // Show entry in read-only mode
      public function showReadOnly(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          // Use the 'view' policy method to check if the user can view the entry
+          $this->authorize('view', $entry);
 
           $user = Auth::user();
           $emotions = Emotion::all();
@@ -142,7 +169,12 @@ class EntryController extends Controller
      // Delete an entry
      public function destroy(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          if (!Gate::allows('isAdmin') && $entry->user_id !== Auth::id()) {
+               abort(403, 'Unauthorized action.');
+          }
+
+          // Use the 'delete' policy method to check if the user can delete the entry
+          $this->authorize('delete', $entry);
           $entry->delete();
           return redirect()->route('entries.trash')->with('info', 'Entry deleted successfully');
      }
@@ -151,7 +183,8 @@ class EntryController extends Controller
      public function sendTrash(Entry $entry)
      {
           // Ensure the user is authorized to perform this action
-          $this->authorize('author', $entry);
+          // Use the 'delete' policy method to check if the user can delete the entry
+          $this->authorize('delete', $entry);
 
           $entry->delete = 1;
           $entry->save();
@@ -179,7 +212,7 @@ class EntryController extends Controller
 
           if ($nEntries > 0) {
                foreach ($entries as $entry) {
-                    $entry->delete();
+                    $entry->forceDelete(); // Permanently delete the entry
                }
           }
 
@@ -195,7 +228,8 @@ class EntryController extends Controller
      // Restore an entry from trash
      public function restore(Entry $entry)
      {
-          $this->authorize('author', $entry);
+          // Use the 'update' policy method to check if the user can update the entry
+          $this->authorize('update', $entry);
           $entry->delete = 0;
           $entry->save();
           return redirect()->route('entries.trash')->with('info', 'Entry restored successfully');
@@ -237,7 +271,7 @@ class EntryController extends Controller
                return $html;
           }
           $openedtags = array_reverse($openedtags);
-          for ($i = 0; $i < $len_opened; $i++) {
+          for ($i = 0; $len_opened; $i++) {
                if (!in_array($openedtags[$i], $closedtags)) {
                     $html .= '</' . $openedtags[$i] . '>';
                } else {
@@ -246,4 +280,48 @@ class EntryController extends Controller
           }
           return $html;
      }
+
+     // Auto Logout Timer (Session)
+     // This function checks if the user has been inactive for a certain period and logs them out after 1 hour.
+     public function autoLogout()
+     {
+         if (!session()->has('last_activity')) {
+             session(['last_activity' => now()]);
+         }
+     
+         $lastActivity = session('last_activity');
+         $timeout = config('session.lifetime') * 60; // Convert session lifetime to seconds
+     
+         if (now()->diffInSeconds($lastActivity) > $timeout) {
+             Auth::logout();
+             session()->flush();
+     
+             if (request()->ajax()) {
+                 return response()->json(['redirect' => route('login')], 401);
+             }
+     
+             return redirect()->route('login')->with('info', 'You have been logged out due to inactivity.');
+         }
+     
+         session(['last_activity' => now()]); // Update last activity timestamp
+     }
+
+     // Remember Last Visited Entry (Session)
+     public function getLastVisitedEntry()
+     {
+          $lastVisitedEntryId = session('last_visited_entry');
+          $entry = $lastVisitedEntryId ? Entry::find($lastVisitedEntryId) : null;
+          return response()->json(['last_visited_entry' => $entry]);
+     }
+
+     // Add a method to check session status
+     public function checkSessionStatus()
+     {
+          if (Auth::check()) {
+               return response()->json(['status' => 'active']);
+          }
+
+          return response()->json(['status' => 'inactive'], 401);
+     }
+
 }

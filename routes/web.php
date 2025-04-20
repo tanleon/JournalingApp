@@ -53,6 +53,12 @@ Route::middleware('auth')->group(function () {
      Route::post('/entries', [EntryController::class, 'store'])->name('entries.store');
      Route::resource('entries', EntryController::class)->except(["index", "edit"]);
 
+     // Route for last visited entry
+     Route::get('/entries/last-visited', [EntryController::class, 'getLastVisitedEntry'])->name('entries.lastVisited');
+
+     // Auto logout route (middleware can be added for session timeout handling)
+     Route::get('/auto-logout', [EntryController::class, 'autoLogout'])->name('auto.logout');
+
      // User routes
      Route::get('profile', [UserController::class, 'profile'])->name('user.profile');
      Route::post('profile', [UserController::class, 'update'])->name('user.update');
