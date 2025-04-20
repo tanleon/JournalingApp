@@ -15,7 +15,7 @@
           @else
                <form action="{{ route('entries.search') }}" method="post" class="input-search">
                     @csrf
-                    <input type="text" name="search" id="entry-name" placeholder=" &#xf002 Search your entries" style="font-family:Arial, FontAwesome" value="@isset($search){{ $search }}@endisset" required>
+                    <input type="text" name="search" id="entry-name" placeholder=" &#xf002 Search your entries" style="font-family:Arial, FontAwesome" value="@isset($search){{ $search }}@endisset" >
                     <button type="submit">
                          <span class="material-icons-outlined">&#xf1df;</span>
                     </button>
