@@ -1,9 +1,20 @@
+
+
 @extends('layouts.template')
 
 @section('title', 'Login - Note App')
 
-@section('content')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <style>
+          body {
+               font-family:  -apple-system-body;
+               color: red;
+          }
+     </style>
+@endsection
 
+@section('content')
      <div class="card-form-container">
           <div class="form">
                <h1>Journaling App</h1>
