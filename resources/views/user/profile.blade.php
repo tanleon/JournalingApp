@@ -4,11 +4,15 @@
 
 @section('header')
      <header class="header-entry">
-          <div class="container">
-               <a href="{{route("entries.index")}}" class="material-icons-outlined icons">&#xe5c4;</a>
-               <h2 class="profile-title">Settings:</h2>
+          <div class="container" style="display: flex; gap: 1rem; align-items: center;">
+               <a href="{{route("entries.index")}}" class="back-arrow" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="material-icons-outlined">&#xe5c4;</span> Back
+               </a>
           </div>
      </header>
+     <div class="pageTitle">
+          <h1 class="profile-title" style="font-size: 3vh;">User Profile: </h1>
+     </div>
 @endsection
 
 @section('content')
@@ -25,37 +29,41 @@
           </div>
 
           <div class="input-container">
-               <label for="name">Name:</label>
+               <label for="name"><strong>Name: </strong></label>
                <span class="material-icons-round icon">&#xe853;</span> 
                <input type="text" name="name" id="name" value="{{ $user->name }}">
           </div>
 
           <div class="input-container">
-               <label for="email">Email:</label>
+               <label for="email"><strong>Email: </strong></label>
                <span class="material-icons icon">&#xe158;</span>
                <input type="text" name="email" id="email" value="{{ $user->email }}">
           </div>
 
           <div class="input-container">
-               <label for="current-password">[Optional] Current Password:</label>
+               <label for="current-password"><strong>[Optional] Current Password: </strong></label>
                <span class="material-icons icon">&#xe897;</span>
                <input type="password" name="current-password" id="current-password" value="">
           </div>
 
           <div class="input-container">
-               <label for="new-password">[Optional] New Password:</label>
+               <label for="new-password"><strong>[Optional] New Password: </strong></label>
                <span class="material-icons icon">&#xe897;</span>
                <input type="password" name="new-password" id="new-password" value="">
           </div>
 
           <div class="input-container">
-               <label for="new-password-confirmation">[Optional] Confirm New Password:</label>
+               <label for="new-password-confirmation"><strong>[Optional] Confirm New Password: </strong></label>
                <span class="material-icons icon">&#xe897;</span>
                <input type="password" name="new-password_confirmation" id="new-password-confirmation" value="">
           </div>
 
           <div class="input-container">
-               <input type="submit" value="Save">
+               <button type="submit" value="Save" style="padding: 10px; width: 50%; background-color: #3e3e3e; color: white; border: none; border-radius: 5px; transition: background-color 0.3s;" 
+                    onmouseover="this.style.backgroundColor='#ff9900';" 
+                    onmouseout="this.style.backgroundColor='#3e3e3e';">
+                    <strong>Sign Up</strong>
+               </button>
           </div>
      </form>
 @endsection

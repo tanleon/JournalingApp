@@ -30,7 +30,9 @@
                     </div>
 
                     <div class="input-container sumbit">
-                         <input type="submit" value="Next">
+                          <button type="submit" value="Next" style="padding: 10px; width: 50%; background-color: #3e3e3e; color: white; border: none; border-radius: 5px; transition: background-color 0.3s;" 
+                          onmouseover="this.style.backgroundColor='#ff9900';" 
+                          onmouseout="this.style.backgroundColor='#3e3e3e';"><strong>Login</strong></button>
                          <a href="{{ route("login.register")}}" class="create-account">Create account</a>
                     </div>
                </form>
