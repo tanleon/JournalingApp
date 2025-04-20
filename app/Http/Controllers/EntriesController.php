@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Entry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EntriesController extends Controller
 {
@@ -11,6 +12,11 @@ class EntriesController extends Controller
 
     public function store(Request $request)
     {
+        // Allow only authors or admins to create entries
+        if (Gate::denies('isAuthor') && Gate::denies('isAdmin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',

@@ -4,6 +4,31 @@
 
 @section('styles')
      <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+     <style>
+          body.dark {
+               background-color: #292c35 !important;
+               color: #ffffff !important;
+          }
+          body.dark .editor-container {
+               background-color: #444 !important;
+               color: #fff !important;
+          }
+          body.dark .datetime-input {
+               background-color: #333 !important;
+               color: #fff !important;
+          }
+          body.dark .title-input {
+               color: #fff !important;
+          }
+          body.dark .button-icon {
+               color: #fff !important;
+               background-color: #292c35;
+               border-color: #fff !important;
+          }
+          body.dark .button-icon .material-icons-outlined {
+               color: #fff !important;
+          }
+     </style>
 @endsection
 
 @section('content')
@@ -132,7 +157,16 @@
 @section('scripts')
      <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
      <script>
+          // Dark mode toggle
           document.addEventListener('DOMContentLoaded', function () {
+               // Apply the dark class based on the theme cookie
+               const currentTheme = document.cookie.replace(/(?:(?:^|.*;\s*)theme\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+               if (currentTheme === 'dark') {
+                    document.body.classList.add('dark');
+               } else {
+                    document.body.classList.remove('dark');
+               }
+
                const quill = new Quill('#editor', {
                     theme: 'snow',
                     readOnly: {{ isset($readOnly) ? 'true' : 'false' }}

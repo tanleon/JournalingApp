@@ -4,6 +4,26 @@
 
 @section('styles')
      <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+     <style>
+          .entry-container {
+               background-color: #f9f9f9;
+               padding: 20px;
+               border-radius: 8px;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+
+          .title-input, .datetime-input, .emotion-dropdown, .label-input {
+               background-color: #fff;
+               color: #000;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+
+          .editor-container {
+               background-color: #fff;
+               color: #000;
+               transition: background-color 0.2s linear, color 0.2s linear;
+          }
+     </style>
 @endsection
 
 @section('content')
@@ -145,7 +165,7 @@
 @section('scripts')
      <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
      <script>
-          document.addEventListener('DOMContentLoaded', function () {
+     document.addEventListener('DOMContentLoaded', function () {
                const quill = new Quill('#editor', {
                     theme: 'snow',
                     readOnly: {{ isset($readOnly) ? 'true' : 'false' }}
@@ -218,6 +238,7 @@
                          dropdownMenu.style.display = 'none';
                     }
                });
+          });
           });
      </script>
      @include('entries.components.alerts-js')

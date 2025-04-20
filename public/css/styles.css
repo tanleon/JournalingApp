@@ -10,3 +10,30 @@
      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
      border: 2px solid rgba(0, 0, 0, 0.3);
 }
+
+body.dark {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+}
+body.dark .menu-container {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+body.dark .card.hover-effect {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+.menu-container li a.theme-toggle {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-container li a.theme-toggle:hover {
+    background-color: #f0f0f0;
+    color: #000;
+}
