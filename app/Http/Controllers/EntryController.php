@@ -51,6 +51,10 @@ class EntryController extends Controller
                'emotion_id' => $request->emotion_id,
                'user_id' => Auth::id(),
           ]);
+          // Attach selected labels to the entry
+          if ($request->has('labels')) {
+               $entry->labels()->sync($request->input('labels'));
+          }
 
           return redirect()->route('entries.show', $entry)->with('success', 'Entry created successfully.');
      }
@@ -205,6 +209,9 @@ class EntryController extends Controller
      public function search(Request $request)
      {
           $search = $request->search;
+          if (empty($search)) {
+               return redirect()->route("entries.index");
+          }
           return redirect()->route("entries.searchView", $search);
      }
 

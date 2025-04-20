@@ -15,7 +15,7 @@
           'Sadness' => '#2196f3',
           'Anger' => '#f44336',
           'Fear' => '#673ab7',
-          'Disgust' => '#795548',
+          'Disgust' => '#70dd22',
           'Guilt' => '#607d8b',
           'Shame' => '#9e9e9e',
           'Frustration' => '#ff7043',
@@ -26,6 +26,7 @@
           'Nostalgia' => '#ffab91',
           'Curiosity' => '#ffb74d',
           'Confusion' => '#cddc39',
+          'Acceptance' => '#a257ff'
      ];
 
      // Get the color for the current emotion or fallback to white
@@ -33,35 +34,56 @@
 @endphp
 
 <div class="card-container grid-item" 
-     @isset($trash) onclick="toggleDropdown(this);" @else onclick="window.location='{{ route('entries.show', $entry) }}';" @endisset 
-     style="cursor: pointer;">
-     <div class="card hover-effect" style="background-color: {{ $cardColor }}; border-radius: 8px; position: relative;">
+     @isset($trash) onclick="toggleDropdown(this);" 
+     @else onclick="window.location='{{ route('entries.show', $entry) }}';" 
+     @endisset 
+     style="cursor: pointer; align-items: center; display: flex; justify-content: center; padding-top: 10px;">
+     <div class="card hover-effect" 
+          style="width: 70%; background-color: {{ $cardColor }}; border: 1px solid {{ $cardColor }}; border-radius: 8px; position: relative; transition: transform 0.3s, box-shadow 0.3s;">
+          <style>
+               .card-container:hover .card {
+                    transform: scale(1.05);
+                    box-shadow: 0 8px 16px #3e3e3e;
+               }
+          </style>
 
           {{-- Card created_at --}}
           <div class="card-header" style="margin-bottom: 10px;">
                <span class="created-at" style="
-                         font-size: 1.4rem; 
-                         font-weight: bold; 
-                         color: #000000; 
-                         background-color: #ffffff; 
-                         padding: 2px 4px; 
-                         border: 1px solid #000000; 
-                         border-radius: 4px;
-               ">
+                    font-size: 1.4rem; 
+                    font-weight: bold; 
+                    color: {{ (hexdec(substr($cardColor, 1, 2)) * 0.299 + hexdec(substr($cardColor, 3, 2)) * 0.587 + hexdec(substr($cardColor, 5, 2)) * 0.114) > 186 ? '#000000' : '#ffffff' }}; 
+                    background-color: transparent; 
+                    padding: 2px 4px;">
                     {{ $entry->created_at->format('Y-m-d H:i:s') }}
                </span>
           </div>
 
           {{-- Card title & body preview --}}
-          <h3 style="font-size: 1.8rem; font-weight: bold; margin-bottom: 8px; color: #333;">{{$entry->title}}</h3>
-          <div class="content" style="font-size: 1.2rem; color: #555; line-height: 1.5;">
+          <h3 style="
+               font-size: 1.8rem; 
+               font-weight: bold; 
+               margin-bottom: 8px; 
+               color: {{ (hexdec(substr($cardColor, 1, 2)) * 0.299 + hexdec(substr($cardColor, 3, 2)) * 0.587 + hexdec(substr($cardColor, 5, 2)) * 0.114) > 186 ? '#000000' : '#ffffff' }};">
+               {{ $entry->title }}
+          </h3>
+
+          <div class="content" style="
+               font-size: 1.2rem; 
+               color: {{ (hexdec(substr($cardColor, 1, 2)) * 0.299 + hexdec(substr($cardColor, 3, 2)) * 0.587 + hexdec(substr($cardColor, 5, 2)) * 0.114) > 186 ? '#000000' : '#ffffff' }}; 
+               line-height: 1.5;">
                {{ Str::limit(strip_tags($entry->body), 100, '...') }}
           </div>
 
           {{-- Card tags --}}
           <div class="tags-container" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
                @foreach ($entry->labels as $label)
-                    <span class="label" style="font-size: 1rem; color: #fff; background-color: #007bff; padding: 4px 8px; border-radius: 4px;">
+                    <span class="label" style="
+                         font-size: 1rem; 
+                         color: #fff; 
+                         background-color: #007bff; 
+                         padding: 4px 8px; 
+                         border-radius: 4px;">
                          {{ $label->name }}
                     </span>
                @endforeach
@@ -69,12 +91,17 @@
 
           {{-- Emotion at the middle bottom --}}
           <div class="emotion-container" style="margin-top: 15px; text-align: center;">
-               <span class="emotion-name" style="font-size: 1.2rem; font-weight: bold; color: #444;">{{ $entry->emotion->name }}</span>
+               <span class="emotion-name" style="
+                    font-size: 1.2rem; 
+                    font-weight: bold; 
+                    color: {{ (hexdec(substr($cardColor, 1, 2)) * 0.299 + hexdec(substr($cardColor, 3, 2)) * 0.587 + hexdec(substr($cardColor, 5, 2)) * 0.114) > 186 ? '#000000' : '#ffffff' }};">
+                    {{ $entry->emotion->name }}
+               </span>
           </div>
 
           {{-- Options Dropdown --}}
           @isset($trash)
-               <div class="dropdown" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: #fff; border: 1px solid #ccc; border-radius: 4px; display: none; padding: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 200px;">
+               <div class="dropdown" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); color: {{ (hexdec(substr($cardColor, 1, 2)) * 0.299 + hexdec(substr($cardColor, 3, 2)) * 0.587 + hexdec(substr($cardColor, 5, 2)) * 0.114) > 186 ? '#000000' : '#ffffff' }}; border: 1px solid #ccc; border-radius: 4px; display: none; padding: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 200px;">
                     {{-- Delete button --}}
                     <form action="{{ route('entries.destroy', $entry) }}" method="post" style="margin-bottom: 10px;">
                          @csrf
